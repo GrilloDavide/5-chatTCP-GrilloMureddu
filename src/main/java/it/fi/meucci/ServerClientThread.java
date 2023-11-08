@@ -9,12 +9,13 @@ import java.net.Socket;
 
 public class ServerClientThread extends Thread{
   
+    ServerClientsHandler clientsHandler;
     BufferedReader inClient;
     DataOutputStream outClient;
     String clientName;
 
-    public ServerClientThread(Socket client) throws IOException{
-
+    public ServerClientThread(Socket client, ServerClientsHandler clientsHandler) throws IOException{
+        this.clientsHandler = clientsHandler;
         inClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
         outClient = new DataOutputStream(client.getOutputStream());
 
@@ -24,14 +25,23 @@ public class ServerClientThread extends Thread{
     @Override
     public void run() {
         try{
-            
-           communicate();
+            clientName = inClient.readLine();
+            clientsHandler.addClient(this);
+            String msg;
+            for(;;){
+                msg = inClient.readLine();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void communicate() throws IOException{
+    public void forwardMessage(String msg) throws IOException{
         String nameString = inClient.readLine(); //The first line from a new client is the username
+    }
+
+
+    private void recognizeMsgType(String msg){
+
     }
 }
