@@ -1,9 +1,9 @@
 package it.fi.meucci;
 
 public enum Prefix {
-    CNT,
-    PUB,
-    PRV,
-    LST,
-    DSC
+    CNT,//CONNECT
+    PUB,//PUBLIC
+    PRV,//PRIVATE
+    LST,//LIST
+    DSC//DISCONNECT
 }

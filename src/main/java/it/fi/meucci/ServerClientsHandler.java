@@ -26,4 +26,10 @@ public class ServerClientsHandler {
         return id;
     }
 
+    public HashMap<String,String> sendClientsMap(){
+
+        return null;
+    }
+
+
 }

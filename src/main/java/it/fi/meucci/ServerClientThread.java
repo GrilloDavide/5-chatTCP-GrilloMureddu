@@ -25,23 +25,47 @@ public class ServerClientThread extends Thread{
     @Override
     public void run() {
         try{
-            clientName = inClient.readLine();
-            clientsHandler.addClient(this);
-            String msg;
-            for(;;){
-                msg = inClient.readLine();
-            }
+
+           do{
+
+                interpretMessageType(inClient.readLine());
+            }while(true);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void forwardMessage(String msg) throws IOException{
-        String nameString = inClient.readLine(); //The first line from a new client is the username
+    public void forwardToPrivate(String message){
+
     }
 
+    public void forwardToAll(String message){
 
-    private void recognizeMsgType(String msg){
+    }
 
+    private void interpretMessageType(String msg){
+        Prefix messageType = Prefix.valueOf(msg.substring(0,3));
+        String msgContent = msg.substring(3);
+
+        switch(messageType){
+            case CNT:
+                clientName = msgContent;
+                clientsHandler.addClient(this);
+                break;
+            case PUB:
+                forwardToAll(msgContent);
+                break;
+            case PRV:
+                forwardToPrivate(msgContent);
+                break;
+            case LST:
+
+                break;
+            case DSC:
+
+                break;
+            default:
+
+        }
     }
 }
