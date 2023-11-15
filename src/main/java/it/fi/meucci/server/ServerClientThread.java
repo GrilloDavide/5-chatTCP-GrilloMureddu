@@ -15,7 +15,7 @@ public class ServerClientThread extends Thread{
     BufferedReader inClient;
     DataOutputStream outClient;
     String clientName;
-
+    String clientId;
     public ServerClientThread(Socket client, ServerClientsHandler clientsHandler) throws IOException{
         this.clientsHandler = clientsHandler;
         inClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -29,8 +29,9 @@ public class ServerClientThread extends Thread{
         try{
             
            do{
-                
-                interpretMessageType(inClient.readLine());
+                String msgIn = inClient.readLine();
+                interpretMessageType(msgIn);
+                System.out.println(msgIn);
 
             }while(true);
 
@@ -40,7 +41,7 @@ public class ServerClientThread extends Thread{
     }
 
     public void forwardToPrivate(String message){
-
+        
     }
 
     public void forwardToAll(String message){

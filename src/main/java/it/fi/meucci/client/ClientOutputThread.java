@@ -23,6 +23,7 @@ public class ClientOutputThread extends Thread{
     @Override
     public void run(){
         try {
+            System.out.println("Inserire il nome utente");
             forwardMessageToServer(userInput.nextLine(), Prefix.CNT);
             do{
                 communicate();
@@ -34,11 +35,12 @@ public class ClientOutputThread extends Thread{
 
     private void communicate() throws IOException{
         
-        userMenu();
+        
         String userChoice;
         String message = "";
         Prefix prefix = null;
         do{
+            userMenu();
             userChoice = userInput.nextLine();
             switch(userChoice){
                
@@ -49,7 +51,9 @@ public class ClientOutputThread extends Thread{
                     break;
                 case "2": prefix = Prefix.PRV;
                     System.out.println("Scegliere l'utente con cui si vuole comunicare");
-                        
+
+                    System.out.println("Scrivere il messaggio"); 
+                    message = userInput.nextLine();
                     break;
                 case "3": prefix = Prefix.LST;
                     
@@ -58,7 +62,7 @@ public class ClientOutputThread extends Thread{
                     
                     break; 
                 default:
-
+                    prefix = null;
             }
             if(prefix != null)
                 forwardMessageToServer(message, prefix);
@@ -66,7 +70,9 @@ public class ClientOutputThread extends Thread{
         
     }
 
-    private void forwardMessageToServer(String message, Prefix prefix){
+    private void forwardMessageToServer(String message, Prefix prefix) throws IOException{
+        
+        outServer.writeBytes(prefix+message+"\n");
 
     }
 

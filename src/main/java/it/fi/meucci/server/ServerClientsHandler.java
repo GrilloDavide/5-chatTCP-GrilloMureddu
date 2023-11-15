@@ -2,6 +2,8 @@ package it.fi.meucci.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.Map.Entry;
 
 public class ServerClientsHandler {
     
@@ -11,6 +13,7 @@ public class ServerClientsHandler {
 
     public ServerClientsHandler(){
         connectedClients = new ArrayList<>();
+        idNamesMap = new HashMap<>();
         progressiveId = 0;
     }
 
@@ -27,6 +30,16 @@ public class ServerClientsHandler {
     private String assignId(){
         String id = String.format("%05d", progressiveId);
         progressiveId++;
+        return id;
+    }
+
+    public String getIdByName(String name){
+        String id = "";
+        for(Entry<String, String> idname : idNamesMap.entrySet()){
+            if(Objects.equals(name, idname.getValue()))
+                return idname.getKey();
+        }
+
         return id;
     }
 

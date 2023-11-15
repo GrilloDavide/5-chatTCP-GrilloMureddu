@@ -12,10 +12,4 @@ public class ClientMain {
         client.communicate();
         
     }
-
-
-
-    public void switchOptions(){
-        System.out.println();
-    }
 }
