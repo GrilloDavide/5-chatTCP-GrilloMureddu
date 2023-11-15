@@ -1,4 +1,4 @@
-package it.fi.meucci;
+package it.fi.meucci.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,11 +20,17 @@ public class ServerClientsHandler {
 
     }
 
+    public void removeClient(){
+            
+    }
+
     private String assignId(){
         String id = String.format("%05d", progressiveId);
         progressiveId++;
         return id;
     }
+
+    
 
     public HashMap<String,String> sendClientsMap(){
 

@@ -1,10 +1,12 @@
-package it.fi.meucci;
+package it.fi.meucci.server;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+
+import it.fi.meucci.Prefix;
 
 
 public class ServerClientThread extends Thread{
@@ -25,11 +27,13 @@ public class ServerClientThread extends Thread{
     @Override
     public void run() {
         try{
-
+            
            do{
-
+                
                 interpretMessageType(inClient.readLine());
+
             }while(true);
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -59,10 +63,11 @@ public class ServerClientThread extends Thread{
                 forwardToPrivate(msgContent);
                 break;
             case LST:
-
+                clientsHandler.sendClientsMap();
                 break;
             case DSC:
-
+                clientsHandler.removeClient();
+                
                 break;
             default:
 

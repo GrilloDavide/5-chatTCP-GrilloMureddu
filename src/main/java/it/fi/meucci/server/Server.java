@@ -1,4 +1,4 @@
-package it.fi.meucci;
+package it.fi.meucci.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
