@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Map.Entry;
-import it.fi.meucci.HashMapConverter;
+import it.fi.meucci.MapHandler;
 
 public class ServerClientsHandler {
     
-    ArrayList <ServerClientThread> connectedClients;
-    HashMap <String, String> idNamesMap; // {id ; clientname}
-    int progressiveId;
+    public static ArrayList <ServerClientThread> connectedClients;
+    static HashMap <String, String> idNamesMap; // {id ; clientname}
+    static int progressiveId;
 
     public ServerClientsHandler(){
         connectedClients = new ArrayList<>();
@@ -18,36 +18,24 @@ public class ServerClientsHandler {
         progressiveId = 0;
     }
 
-    public void addClient(ServerClientThread client){
+    public static void addClient(ServerClientThread client){
         idNamesMap.put(assignId(), client.clientName);
         connectedClients.add(client);
 
     }
 
-    public void removeClient(){
-            
+    public static void removeClient(){
+
     }
 
-    private String assignId(){
+    private static String assignId(){
         String id = String.format("%05d", progressiveId);
         progressiveId++;
         return id;
     }
 
-    public String getIdByName(String name){
-        String id = "";
-        for(Entry<String, String> idname : idNamesMap.entrySet()){
-            if(Objects.equals(name, idname.getValue()))
-                return idname.getKey();
-        }
-
-        return id;
-    }
-
-    
-
-    public String sendClientsMap(){
-        return HashMapConverter.hashMapToString(idNamesMap);
+    public static String sendClientsMap(){
+        return MapHandler.hashMapToString(idNamesMap);
     }
 
 

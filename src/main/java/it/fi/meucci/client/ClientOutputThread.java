@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Scanner;
 
+import it.fi.meucci.MapHandler;
 import it.fi.meucci.Prefix;
 
 
@@ -13,9 +14,11 @@ public class ClientOutputThread extends Thread{
     
     Scanner userInput;
     DataOutputStream outServer;
+    Client clientParent;
 
 
-    public ClientOutputThread(OutputStream outputStream){
+    public ClientOutputThread(OutputStream outputStream, Client clientParent){
+        this.clientParent = clientParent;
         userInput = new Scanner(System.in);
         outServer = new DataOutputStream(outputStream);
     }
@@ -43,34 +46,41 @@ public class ClientOutputThread extends Thread{
             userMenu();
             userChoice = userInput.nextLine();
             switch(userChoice){
-               
+
                 case "1": prefix = Prefix.PUB;
                     System.out.println("Scrivere il messaggio");
                     message = userInput.nextLine();
 
                     break;
+
                 case "2": prefix = Prefix.PRV;
                     System.out.println("Scegliere l'utente con cui si vuole comunicare");
+                    forwardMessageToServer("Lista richiesta da client", Prefix.LST);
+                    message = MapHandler.getIdByName(userInput.nextLine(), clientParent.idNamesMap);
+                    System.out.println("Scrivere il messaggio");
+                    message += userInput.nextLine();
+                    break;
 
-                    System.out.println("Scrivere il messaggio"); 
-                    message = userInput.nextLine();
-                    break;
                 case "3": prefix = Prefix.LST;
-                    
+                    message = " ";
                     break;
+
                 case "0": prefix = Prefix.DSC;
-                    
-                    break; 
+                    message = " ";
+                    break;
+
                 default:
                     prefix = null;
             }
+
             if(prefix != null)
                 forwardMessageToServer(message, prefix);
-        }while(userChoice != "0");
+
+        }while(!(userChoice.equals("0")));
         
     }
 
-    private void forwardMessageToServer(String message, Prefix prefix) throws IOException{
+    public void forwardMessageToServer(String message, Prefix prefix) throws IOException{
         
         outServer.writeBytes(prefix+message+"\n");
 
@@ -83,7 +93,5 @@ public class ClientOutputThread extends Thread{
         System.out.println("(3) - Per richiedere la lista degli utenti connessi");
         System.out.println("(0) - Per abbandonare la chat");
     }
-
-
 
 }

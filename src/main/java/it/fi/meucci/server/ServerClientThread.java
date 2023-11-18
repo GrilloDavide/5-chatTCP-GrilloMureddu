@@ -6,22 +6,23 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import it.fi.meucci.MapHandler;
 import it.fi.meucci.Prefix;
 
 
 public class ServerClientThread extends Thread{
   
-    ServerClientsHandler clientsHandler;
+
     BufferedReader inClient;
     DataOutputStream outClient;
+    Server serverParent;
     String clientName;
-    public ServerClientThread(Socket client, ServerClientsHandler clientsHandler) throws IOException{
-        this.clientsHandler = clientsHandler;
+    public ServerClientThread(Socket client, Server serverParent) throws IOException{
+        this.serverParent = serverParent;
         inClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
         outClient = new DataOutputStream(client.getOutputStream());
 
     }
-    
 
     @Override
     public void run() {
@@ -39,42 +40,30 @@ public class ServerClientThread extends Thread{
         }
     }
 
-    public void forwardToPrivate(String message){
-        String id = message.substring(0,5);
-        message = message.substring(5);
-
+    public void messageToClient(String message) throws IOException {
+        outClient.writeBytes(message+"\n");
     }
 
-    public void forwardToAll(String message){
-
-    }
-
-
-    public void forwardList(String map){
-
-    }
-
-
-    private void interpretMessageType(String msg){
+    private void interpretMessageType(String msg) throws IOException {
         Prefix messageType = Prefix.valueOf(msg.substring(0,3));
         String msgContent = msg.substring(3);
 
         switch(messageType){
             case CNT:
                 clientName = msgContent;
-                clientsHandler.addClient(this);
+                ServerClientsHandler.addClient(this);
                 break;
             case PUB:
-                forwardToAll(msgContent);
+                serverParent.forwardToAll(msgContent);
                 break;
             case PRV:
-                forwardToPrivate(msgContent);
+                serverParent.forwardMessage(msgContent, MapHandler.getIdByName(clientName, ServerClientsHandler.idNamesMap), Prefix.PRV);
                 break;
             case LST:
-                clientsHandler.sendClientsMap();
+                messageToClient(Prefix.LST+ServerClientsHandler.sendClientsMap());
                 break;
             case DSC:
-                clientsHandler.removeClient();
+                ServerClientsHandler.removeClient();
                 
                 break;
             default:
