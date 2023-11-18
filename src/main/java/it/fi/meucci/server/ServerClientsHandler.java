@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Map.Entry;
+import it.fi.meucci.HashMapConverter;
 
 public class ServerClientsHandler {
     
@@ -45,10 +46,10 @@ public class ServerClientsHandler {
 
     
 
-    public HashMap<String,String> sendClientsMap(){
-
-        return null;
+    public String sendClientsMap(){
+        return HashMapConverter.hashMapToString(idNamesMap);
     }
+
 
 
 }
