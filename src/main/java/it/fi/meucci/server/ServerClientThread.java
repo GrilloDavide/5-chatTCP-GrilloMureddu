@@ -32,6 +32,7 @@ public class ServerClientThread extends Thread{
                 String msgIn = inClient.readLine();
                 interpretMessageType(msgIn);
                 System.out.println(msgIn);
+                System.out.println(ServerClientsHandler.idNamesMap);
 
             }while(true);
 
@@ -54,7 +55,7 @@ public class ServerClientThread extends Thread{
                 ServerClientsHandler.addClient(this);
                 break;
             case PUB:
-                serverParent.forwardToAll(msgContent);
+                serverParent.forwardToAll(msgContent, MapHandler.getIdByName(clientName, ServerClientsHandler.idNamesMap));
                 break;
             case PRV:
                 serverParent.forwardMessage(msgContent, MapHandler.getIdByName(clientName, ServerClientsHandler.idNamesMap), Prefix.PRV);

@@ -41,9 +41,10 @@ public class ClientOutputThread extends Thread{
         
         String userChoice;
         String message = "";
-        Prefix prefix = null;
+        Prefix prefix;
+        userMenu();
         do{
-            userMenu();
+            prefix = null;
             userChoice = userInput.nextLine();
             switch(userChoice){
 
@@ -62,15 +63,19 @@ public class ClientOutputThread extends Thread{
                     break;
 
                 case "3": prefix = Prefix.LST;
-                    message = " ";
+                    message = "Richiesta da utente";
                     break;
 
                 case "0": prefix = Prefix.DSC;
-                    message = " ";
+                    message = "TERMINA";
                     break;
 
+                case "HELP","H","help" :
+                    userMenu();
+                    break;
                 default:
                     prefix = null;
+                    System.out.println("Errore: nessun numero e' associato a questa azione");
             }
 
             if(prefix != null)
@@ -81,9 +86,7 @@ public class ClientOutputThread extends Thread{
     }
 
     public void forwardMessageToServer(String message, Prefix prefix) throws IOException{
-        
         outServer.writeBytes(prefix+message+"\n");
-
     }
 
     private void userMenu(){
@@ -92,6 +95,7 @@ public class ClientOutputThread extends Thread{
         System.out.println("(2) - Per scrivere un messaggio ad un utente specifico");
         System.out.println("(3) - Per richiedere la lista degli utenti connessi");
         System.out.println("(0) - Per abbandonare la chat");
+        System.out.println("Scrivere HELP per visualizzare nuovamente questa lista");
     }
 
 }

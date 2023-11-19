@@ -1,13 +1,14 @@
 package it.fi.meucci;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class MapHandler {
 
 
-    public static String getIdByName(String name, HashMap<String, String> hashmap){
+    public static String getIdByName(String name, LinkedHashMap<String, String> hashmap){
         String id = "";
         for(Map.Entry<String, String> entry : hashmap.entrySet()){
             if(Objects.equals(name, entry.getValue()))
@@ -42,7 +43,6 @@ public class MapHandler {
 
     public static String hashMapToString(Map<String, String> hashMap) {
         StringBuilder stringOfMap = new StringBuilder();
-
         for (Map.Entry<String, String> entry : hashMap.entrySet()) {
             stringOfMap.append(entry.getKey())
                     .append("=")
@@ -50,15 +50,11 @@ public class MapHandler {
                     .append(",");
         }
 
-        if (!hashMap.isEmpty()) {
-            stringOfMap = new StringBuilder(stringOfMap.substring(0, stringOfMap.length() - 1));
-        }
-
         return stringOfMap.toString();
     }
 
-    public static HashMap<String, String> stringToHashMap(String hashMapToConvert) {
-        HashMap<String, String> hashMap = new HashMap<>();
+    public static LinkedHashMap<String, String> stringToHashMap(String hashMapToConvert) {
+        LinkedHashMap<String, String> hashMap = new LinkedHashMap<>();
 
         String[] pairs = hashMapToConvert.split(",");
 

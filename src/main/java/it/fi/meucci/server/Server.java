@@ -40,12 +40,14 @@ public class Server {
 
     }
 
-    public void forwardToAll(String idMessage){
-       ServerClientsHandler.connectedClients.forEach(a -> {
+    public void forwardToAll(String message, String senderId){
+        System.out.println(ServerClientsHandler.idNamesMap);
+       ServerClientsHandler.connectedClients.forEach(client -> {
+           String currentClientId = MapHandler.getIdByName(client.clientName, ServerClientsHandler.idNamesMap);
            try {
-               forwardMessage(idMessage, MapHandler.getIdByName(a.clientName, ServerClientsHandler.idNamesMap), Prefix.PUB);
+               if(!currentClientId.equals(senderId))
+                   forwardMessage(currentClientId+message, senderId, Prefix.PUB);
            } catch (IOException e) {
-               System.out.println("DIOBOIA");
                throw new RuntimeException(e);
            }
        });

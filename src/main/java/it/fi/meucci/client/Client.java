@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import it.fi.meucci.MapHandler;
 import it.fi.meucci.Prefix;
@@ -15,7 +16,7 @@ public class Client {
     Socket socket;
     BufferedReader inServer;
     ClientOutputThread outServer;
-    HashMap <String, String> idNamesMap;
+    LinkedHashMap<String, String> idNamesMap;
 
     public Client(Socket socket) throws IOException{
         this.socket = socket;
@@ -26,7 +27,7 @@ public class Client {
         
         inServer = new BufferedReader (new InputStreamReader(socket.getInputStream()));
         outServer = new ClientOutputThread(socket.getOutputStream(), this);
-        outServer.forwardMessageToServer(" ", Prefix.LST);
+
 
     }
 
@@ -37,11 +38,13 @@ public class Client {
 
             interpretMessage(inServer.readLine());
 
+
         }while(true);
     }
 
 
     private void interpretMessage(String msg) throws IOException {
+
         Prefix messageType = Prefix.valueOf(msg.substring(0,3));
         String msgContent = msg.substring(3);
 
