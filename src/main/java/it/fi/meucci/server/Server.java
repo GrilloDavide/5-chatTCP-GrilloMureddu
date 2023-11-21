@@ -9,8 +9,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Server {
-    
-    public ServerClientsHandler clientsHandler;
 
     ServerSocket serverSckt;
 
@@ -18,7 +16,6 @@ public class Server {
 
     public Server(ServerSocket serverSckt){
         this.serverSckt = serverSckt;
-        clientsHandler = new ServerClientsHandler();
     }
 
     public void serverStart() throws IOException{
