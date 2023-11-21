@@ -42,6 +42,7 @@ public class Server {
 
     public void forwardToAll(String message, String senderId){
         System.out.println(ServerClientsHandler.idNamesMap);
+
        ServerClientsHandler.connectedClients.forEach(client -> {
            String currentClientId = MapHandler.getIdByName(client.clientName, ServerClientsHandler.idNamesMap);
            try {

@@ -17,6 +17,8 @@ public class ServerClientThread extends Thread{
     DataOutputStream outClient;
     Server serverParent;
     String clientName;
+
+    Boolean connection = true;
     public ServerClientThread(Socket client, Server serverParent) throws IOException{
         this.serverParent = serverParent;
         inClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -34,7 +36,7 @@ public class ServerClientThread extends Thread{
                 System.out.println(msgIn);
                 System.out.println(ServerClientsHandler.idNamesMap);
 
-            }while(true);
+            }while(connection);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -64,11 +66,16 @@ public class ServerClientThread extends Thread{
                 messageToClient(Prefix.LST+ServerClientsHandler.sendClientsMap());
                 break;
             case DSC:
-                ServerClientsHandler.removeClient();
-                
+                messageToClient(Prefix.DSC+"");
+                ServerClientsHandler.removeClient(this);
+                closeThread();
                 break;
             default:
 
         }
+    }
+
+    private void closeThread(){
+        connection = false;
     }
 }

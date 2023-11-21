@@ -17,6 +17,7 @@ public class Client {
     BufferedReader inServer;
     ClientOutputThread outServer;
     LinkedHashMap<String, String> idNamesMap;
+    Boolean connection = true;
 
     public Client(Socket socket) throws IOException{
         this.socket = socket;
@@ -39,7 +40,7 @@ public class Client {
             interpretMessage(inServer.readLine());
 
 
-        }while(true);
+        }while(connection);
     }
 
 
@@ -62,9 +63,11 @@ public class Client {
             case DSC:
                 closeClient();
                 break;
+
             default:
 
         }
+
     }
 
     private void updateIdMap(String stringedMap){
@@ -72,6 +75,7 @@ public class Client {
     }
 
     private void closeClient() {
-
+        System.out.println("Comunicazione terminata");
+        connection = false;
     }
 }

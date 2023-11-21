@@ -28,7 +28,12 @@ public class ServerClientsHandler {
         System.out.println(idNamesMap);
     }
 
-    public static void removeClient(){
+    public static void removeClient(ServerClientThread clientThread){
+
+        connectedClients.remove(clientThread);
+        idNamesMap.remove(MapHandler.getIdByName(clientThread.clientName,idNamesMap));
+        updateClientsMaps();
+        clientThread.interrupt();
 
     }
 

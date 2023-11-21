@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.SQLOutput;
+import java.util.Map;
 import java.util.Scanner;
 
 import it.fi.meucci.MapHandler;
@@ -28,9 +30,8 @@ public class ClientOutputThread extends Thread{
         try {
             System.out.println("Inserire il nome utente");
             forwardMessageToServer(userInput.nextLine(), Prefix.CNT);
-            do{
-                communicate();
-            }while(true);
+
+            communicate();
         } catch (Exception e) {
            e.printStackTrace();
         }
@@ -57,13 +58,15 @@ public class ClientOutputThread extends Thread{
                 case "2": prefix = Prefix.PRV;
                     System.out.println("Scegliere l'utente con cui si vuole comunicare");
                     forwardMessageToServer("Lista richiesta da client", Prefix.LST);
+                    printConnectedUsers();
                     message = MapHandler.getIdByName(userInput.nextLine(), clientParent.idNamesMap);
                     System.out.println("Scrivere il messaggio");
                     message += userInput.nextLine();
                     break;
 
                 case "3": prefix = Prefix.LST;
-                    message = "Richiesta da utente";
+                    forwardMessageToServer("Lista richiesta da utente", Prefix.LST);
+                    printConnectedUsers();
                     break;
 
                 case "0": prefix = Prefix.DSC;
@@ -78,7 +81,7 @@ public class ClientOutputThread extends Thread{
                     System.out.println("Errore: nessun numero e' associato a questa azione");
             }
 
-            if(prefix != null)
+            if(!(prefix == null || prefix == Prefix.LST))
                 forwardMessageToServer(message, prefix);
 
         }while(!(userChoice.equals("0")));
@@ -96,6 +99,13 @@ public class ClientOutputThread extends Thread{
         System.out.println("(3) - Per richiedere la lista degli utenti connessi");
         System.out.println("(0) - Per abbandonare la chat");
         System.out.println("Scrivere HELP per visualizzare nuovamente questa lista");
+    }
+
+    private void printConnectedUsers(){
+        System.out.println("LISTA DEI CLIENT CONNESSI");
+        for (Map.Entry<String, String> entry : clientParent.idNamesMap.entrySet()){
+            System.out.println("- "+entry.getValue());
+        }
     }
 
 }
