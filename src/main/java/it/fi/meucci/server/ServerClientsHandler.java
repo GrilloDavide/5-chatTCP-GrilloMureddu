@@ -11,15 +11,9 @@ import it.fi.meucci.Prefix;
 
 public class ServerClientsHandler {
     
-    public static ArrayList <ServerClientThread> connectedClients;
-    static LinkedHashMap<String, String> idNamesMap; // {id ; clientname}
-    static int progressiveId;
-
-    public ServerClientsHandler(){
-        connectedClients = new ArrayList<>();
-        idNamesMap = new LinkedHashMap<>();
-        progressiveId = 0;
-    }
+    public static ArrayList <ServerClientThread> connectedClients = new ArrayList<>();
+    static LinkedHashMap<String, String> idNamesMap = new LinkedHashMap<>(); // {id ; clientname}
+    static int progressiveId = 0;
 
     public static void addClient(ServerClientThread client){
         idNamesMap.put(assignId(), client.clientName);
