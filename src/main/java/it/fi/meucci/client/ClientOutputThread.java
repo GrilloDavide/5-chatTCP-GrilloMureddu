@@ -1,10 +1,8 @@
 package it.fi.meucci.client;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.SQLOutput;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -18,7 +16,6 @@ public class ClientOutputThread extends Thread{
     DataOutputStream outServer;
     Client clientParent;
 
-
     public ClientOutputThread(OutputStream outputStream, Client clientParent){
         this.clientParent = clientParent;
         userInput = new Scanner(System.in);
@@ -28,8 +25,7 @@ public class ClientOutputThread extends Thread{
     @Override
     public void run(){
         try {
-            System.out.println("Inserire il nome utente");
-            forwardMessageToServer(userInput.nextLine(), Prefix.CNT);
+            connect();
 
             communicate();
         } catch (Exception e) {
@@ -37,12 +33,48 @@ public class ClientOutputThread extends Thread{
         }
     }
 
+
+    private void connect() throws IOException{
+        String username = "";
+        
+        forwardMessageToServer("Lista richiesta da client", Prefix.LST);
+        
+        System.out.println("Inserire il nome utente");
+        
+        do{
+            forwardMessageToServer("Lista richiesta da client", Prefix.LST);
+            username = userInput.nextLine(); // Tutti gli username sono salvati in lowercase
+            System.out.println(username);
+            if(userCheck(username)){
+                System.out.println("Errore: nome utente gia' presente; inserirne un altro disponibile");
+                printConnectedUsers();
+            }
+                
+
+        }while(userCheck(username));
+
+        forwardMessageToServer(username, Prefix.CNT);
+        super.setName(username);
+    }
+
+    private boolean userCheck(String username){
+        for (Map.Entry<String, String> entry : clientParent.idNamesMap.entrySet()){
+            if(entry.getValue().equals(username))
+                return true;
+        }
+
+        return false;
+    }
+
     private void communicate() throws IOException{
         
         
         String userChoice;
         String message = "";
+        String userToCommunicate = "";
         Prefix prefix;
+        
+        
         userMenu();
         do{
             prefix = null;
@@ -50,16 +82,33 @@ public class ClientOutputThread extends Thread{
             switch(userChoice){
 
                 case "1": prefix = Prefix.PUB;
+                    if(checkIfAlone()){
+                        System.out.println("Errore: non ci sono altri utenti a cui scrivere");
+                        break;
+                    }
+
                     System.out.println("Scrivere il messaggio");
                     message = userInput.nextLine();
 
                     break;
 
-                case "2": prefix = Prefix.PRV;
+                case "2": 
+                    if(checkIfAlone()){
+                        System.out.println("Errore: non ci sono altri utenti a cui scrivere");
+                        break;
+                    }
+
+                    prefix = Prefix.PRV;
                     System.out.println("Scegliere l'utente con cui si vuole comunicare");
-                    forwardMessageToServer("Lista richiesta da client", Prefix.LST);
                     printConnectedUsers();
-                    message = MapHandler.getIdByName(userInput.nextLine(), clientParent.idNamesMap);
+
+                    do { //Controllo del destinatario; non può essere uguale al mittente
+                        userToCommunicate = userInput.nextLine().toLowerCase();
+                        if(userToCommunicate.equals(super.getName()))
+                            System.out.println("Errore: non e' possibile scrivere a se stessi");
+                    } while (userToCommunicate.equals(super.getName()));
+
+                    message = MapHandler.getIdByName(userToCommunicate, clientParent.idNamesMap);
                     System.out.println("Scrivere il messaggio");
                     message += userInput.nextLine();
                     break;
@@ -102,10 +151,17 @@ public class ClientOutputThread extends Thread{
     }
 
     private void printConnectedUsers(){
-        System.out.println("LISTA DEI CLIENT CONNESSI");
+        System.out.println("LISTA DEGLI USER CONNESSI");
         for (Map.Entry<String, String> entry : clientParent.idNamesMap.entrySet()){
-            System.out.println("- "+entry.getValue());
+            System.out.print("- "+entry.getValue());
+            if(super.getName().equals(entry.getValue()))
+                System.out.print(" (TU)");
+            System.out.println("");
         }
+    }
+
+    private boolean checkIfAlone(){
+        return clientParent.idNamesMap.size() <= 1;
     }
 
 }

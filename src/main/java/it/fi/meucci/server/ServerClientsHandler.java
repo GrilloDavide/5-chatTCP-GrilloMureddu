@@ -2,10 +2,9 @@ package it.fi.meucci.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Objects;
-import java.util.Map.Entry;
+import java.util.Map;
+
 import it.fi.meucci.MapHandler;
 import it.fi.meucci.Prefix;
 
@@ -16,11 +15,19 @@ public class ServerClientsHandler {
     static int progressiveId = 0;
 
     public static void addClient(ServerClientThread client){
+        
+        for (Map.Entry<String, String> entry : idNamesMap.entrySet()){
+            if(client.clientName.equals(entry.getValue())){
+                
+                client.clientName = client.clientName+progressiveId;
+            }
+
+        }
         idNamesMap.put(assignId(), client.clientName);
         connectedClients.add(client);
         updateClientsMaps();
-        System.out.println(idNamesMap);
     }
+
 
     public static void removeClient(ServerClientThread clientThread){
 

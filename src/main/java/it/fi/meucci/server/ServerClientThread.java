@@ -55,6 +55,7 @@ public class ServerClientThread extends Thread{
             case CNT:
                 clientName = msgContent;
                 ServerClientsHandler.addClient(this);
+                messageToClient(Prefix.CNT+clientName);
                 break;
             case PUB:
                 serverParent.forwardToAll(msgContent, MapHandler.getIdByName(clientName, ServerClientsHandler.idNamesMap));
