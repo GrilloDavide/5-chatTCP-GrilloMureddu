@@ -15,7 +15,7 @@ public class Client {
     Socket socket;
     BufferedReader inServer;
     ClientOutputThread outServer;
-    LinkedHashMap<String, String> idNamesMap;
+    LinkedHashMap<String, String> idNamesMap = new LinkedHashMap<>();
     Boolean connection = true;
 
     public Client(Socket socket) throws IOException{
@@ -32,6 +32,19 @@ public class Client {
     }
 
     public void communicate() throws IOException{
+        
+
+        do {
+            // login
+            
+            outServer.login();
+            
+        
+            // quando il server mi dice ok
+        } while (!loginOk());
+
+
+
         outServer.start();
         
         do{
@@ -40,20 +53,34 @@ public class Client {
 
 
         }while(connection);
+
+        outServer.interrupt();
+        inServer.close();
     }
 
 
+    private boolean loginOk() throws IOException  {
+        String msg = inServer.readLine();
+        String msgContent = msg.substring(3);
+        return !msgContent.equals("ERROR");
+    }
+
     private void interpretMessage(String msg) throws IOException {
 
-        Prefix messageType = Prefix.valueOf(msg.substring(0,3));
+        Prefix messagePrefix = Prefix.valueOf(msg.substring(0,3));
         String msgContent = msg.substring(3);
 
-        switch(messageType){
-
+        switch(messagePrefix){
+            
+            case CNT:
+                outServer.setName(msgContent);
+            break;
             case PUB, PRV:
+                String messageType = "a te ";
                 String id=msgContent.substring(0,5);
                 msgContent = msgContent.substring(5);
-
+                if(messagePrefix == Prefix.PUB)
+                    messageType = "a tutti";
                 System.out.println("["+MapHandler.getNameById(id, idNamesMap)+"] "+messageType+": "+msgContent);
                 break;
             case LST:

@@ -14,18 +14,19 @@ public class ServerClientsHandler {
     static LinkedHashMap<String, String> idNamesMap = new LinkedHashMap<>(); // {id ; clientname}
     static int progressiveId = 0;
 
-    public static void addClient(ServerClientThread client){
+    public static boolean addClient(ServerClientThread client){
         
         for (Map.Entry<String, String> entry : idNamesMap.entrySet()){
             if(client.clientName.equals(entry.getValue())){
                 
-                client.clientName = client.clientName+progressiveId;
+                return false;
             }
 
         }
         idNamesMap.put(assignId(), client.clientName);
         connectedClients.add(client);
         updateClientsMaps();
+        return true;
     }
 
 

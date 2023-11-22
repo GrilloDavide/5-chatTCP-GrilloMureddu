@@ -31,10 +31,11 @@ public class ServerClientThread extends Thread{
         try{
             
            do{
-                String msgIn = inClient.readLine();
+                String msgIn = inClient.readLine(); 
+                System.out.println("CLIENT -> SERVER || "+msgIn);
                 interpretMessageType(msgIn);
-                System.out.println(msgIn);
-                System.out.println(ServerClientsHandler.idNamesMap);
+               
+                
 
             }while(connection);
 
@@ -45,6 +46,7 @@ public class ServerClientThread extends Thread{
 
     public void messageToClient(String message) throws IOException {
         outClient.writeBytes(message+"\n");
+        System.out.println("SERVER -> CLIENT || "+message);
     }
 
     private void interpretMessageType(String msg) throws IOException {
@@ -54,8 +56,12 @@ public class ServerClientThread extends Thread{
         switch(messageType){
             case CNT:
                 clientName = msgContent;
-                ServerClientsHandler.addClient(this);
-                messageToClient(Prefix.CNT+clientName);
+                if (ServerClientsHandler.addClient(this)) {
+                    messageToClient(Prefix.CNT+clientName);
+                } else {
+                    messageToClient(Prefix.CNT+"ERROR");
+                }
+                
                 break;
             case PUB:
                 serverParent.forwardToAll(msgContent, MapHandler.getIdByName(clientName, ServerClientsHandler.idNamesMap));

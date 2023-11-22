@@ -25,7 +25,7 @@ public class ClientOutputThread extends Thread{
     @Override
     public void run(){
         try {
-            connect();
+            //connect();
 
             communicate();
         } catch (Exception e) {
@@ -34,27 +34,14 @@ public class ClientOutputThread extends Thread{
     }
 
 
-    private void connect() throws IOException{
+    public void login() throws IOException{
         String username = "";
-        
-        forwardMessageToServer("Lista richiesta da client", Prefix.LST);
         
         System.out.println("Inserire il nome utente");
         
-        do{
-            forwardMessageToServer("Lista richiesta da client", Prefix.LST);
-            username = userInput.nextLine(); // Tutti gli username sono salvati in lowercase
-            System.out.println(username);
-            if(userCheck(username)){
-                System.out.println("Errore: nome utente gia' presente; inserirne un altro disponibile");
-                printConnectedUsers();
-            }
-                
-
-        }while(userCheck(username));
-
+        username = userInput.nextLine(); // Tutti gli username sono salvati in lowercase
+        
         forwardMessageToServer(username, Prefix.CNT);
-        super.setName(username);
     }
 
     private boolean userCheck(String username){
@@ -74,18 +61,20 @@ public class ClientOutputThread extends Thread{
         String userToCommunicate = "";
         Prefix prefix;
         
-        
+        forwardMessageToServer("ListaClient", Prefix.LST);
         userMenu();
         do{
             prefix = null;
             userChoice = userInput.nextLine();
             switch(userChoice){
 
-                case "1": prefix = Prefix.PUB;
+                case "1": 
                     if(checkIfAlone()){
                         System.out.println("Errore: non ci sono altri utenti a cui scrivere");
                         break;
                     }
+                    
+                    prefix = Prefix.PUB;
 
                     System.out.println("Scrivere il messaggio");
                     message = userInput.nextLine();
@@ -99,6 +88,7 @@ public class ClientOutputThread extends Thread{
                     }
 
                     prefix = Prefix.PRV;
+
                     System.out.println("Scegliere l'utente con cui si vuole comunicare");
                     printConnectedUsers();
 
@@ -114,7 +104,7 @@ public class ClientOutputThread extends Thread{
                     break;
 
                 case "3": prefix = Prefix.LST;
-                    forwardMessageToServer("Lista richiesta da utente", Prefix.LST);
+                    forwardMessageToServer("ListaUtente", Prefix.LST);
                     printConnectedUsers();
                     break;
 
