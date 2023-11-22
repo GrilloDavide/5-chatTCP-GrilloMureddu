@@ -39,18 +39,9 @@ public class ClientOutputThread extends Thread{
         
         System.out.println("Inserire il nome utente");
         
-        username = userInput.nextLine(); // Tutti gli username sono salvati in lowercase
+        username = userInput.nextLine().toLowerCase(); // Tutti gli username sono salvati in lowercase
         
         forwardMessageToServer(username, Prefix.CNT);
-    }
-
-    private boolean userCheck(String username){
-        for (Map.Entry<String, String> entry : clientParent.idNamesMap.entrySet()){
-            if(entry.getValue().equals(username))
-                return true;
-        }
-
-        return false;
     }
 
     private void communicate() throws IOException{
@@ -73,7 +64,7 @@ public class ClientOutputThread extends Thread{
                         System.out.println("Errore: non ci sono altri utenti a cui scrivere");
                         break;
                     }
-                    
+
                     prefix = Prefix.PUB;
 
                     System.out.println("Scrivere il messaggio");

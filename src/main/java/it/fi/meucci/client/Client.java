@@ -62,7 +62,10 @@ public class Client {
     private boolean loginOk() throws IOException  {
         String msg = inServer.readLine();
         String msgContent = msg.substring(3);
-        return !msgContent.equals("ERROR");
+        boolean check = !(msgContent.equals("ERROR"));
+        if(!check)
+            System.out.println("Errore: nome utente gia' in uso; inserirne un altro");
+        return check;
     }
 
     private void interpretMessage(String msg) throws IOException {
